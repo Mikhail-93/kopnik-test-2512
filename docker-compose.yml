@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  app:
+    build: .
+    container_name: dashboard
+    restart: always
+    volumes:
+      - .:/user/dashboard
+    ports:
+      - 3100:3000
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=urz.open.ru
+      - DB_USERNAME=dashboard
+      - DB_PASSWORD=dashboardly7c
+      - DB_PORT=1521
+      - DB_SID=ORCLCDB.localdomain
+    command: ["npm", "start"]

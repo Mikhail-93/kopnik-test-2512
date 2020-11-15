@@ -1,0 +1,39 @@
+{
+  "name": "kopnik-node",
+  "version": "0.0.1",
+  "description": "Official kopnik.org server",
+  "scripts": {
+    "start": "node --require ts-node/register -r tsconfig-paths/register src/index.ts",
+    "test": "jest  --runInBand --testTimeout=10000"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.7",
+    "@types/jest": "^26.0.9",
+    "@types/node": "^8.0.29",
+    "@types/supertest": "^2.0.10",
+    "jest": "^26.4.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0"
+  },
+  "dependencies": {
+    "@types/bunyan": "^1.8.6",
+    "body-parser": "^1.18.1",
+    "bunyan": "^1.8.14",
+    "bunyan-logstash-tcp": "^1.0.0",
+    "cors": "^2.8.5",
+    "cross-fetch": "^3.0.6",
+    "date-fns": "^2.15.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.15.4",
+    "express-async-errors": "^3.1.1",
+    "express-cls-hooked": "^0.3.8",
+    "inversify": "^5.0.1",
+    "lodash": "^4.17.20",
+    "md5": "^2.3.0",
+    "nodemon": "^2.0.4",
+    "reflect-metadata": "^0.1.10",
+    "tsconfig-paths": "^3.9.0",
+    "typeorm": "0.2.25"
+  }
+}
