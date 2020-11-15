@@ -14,7 +14,7 @@ const constants = {
   },
   test: {
     db: {
-      // "synchronize": true,
+      "synchronize": true,
       "logging": true,
     }
   },

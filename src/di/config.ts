@@ -37,86 +37,6 @@ container.bind<IConstants>(TYPES.constants).toDynamicValue(context => {
   return constants[process.env.NODE_ENV]
 }).inSingletonScope()
 
-// Bunyan
-container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((context) => {
-  return (options = {}) => {
-    const defaultOptions: LoggerOptions = {
-      name: "main",
-      streams: [
-        /*      заменил на консоль лог
-                {
-                  level: "debug",
-                  stream: process.stdout            // log INFO and above to stdout
-                },*/
-        {
-          type: "rotating-file",
-          path: resolve(__dirname, '../../logs', process.env.NODE_ENV + ".log"),
-          period: "1d",   // daily rotation
-          count: process.env.NODE_ENV == "production" ? 100 : 1,        // keep 100 back copies
-          level: "debug"
-        }
-      ],
-      serializers: Logger.stdSerializers,
-      src: true
-    };
-
-    // в dev режиме сами отправляем логи в Логсташ
-    if (process.env.NODE_ENV === 'development') {
-      /*      (defaultOptions.streams as any).push({
-              level: 'debug',
-              type: "raw",
-              stream: bunyantcp.createStream({
-                host: 'urz.open.ru',
-                // port: 9998,
-                port: 9995,
-              })
-            })*/
-    }
-    const loggerOptions = _.merge(defaultOptions, options)
-    return new class ContextualLogger extends Logger {
-      log(level: 'debug' | 'warn' | 'info' | 'error', params: any[]) {
-        // if (process.env.NODE_ENV==='test'){
-        console[level](this.fields.name, ...params)
-        // }
-        const req_id = httpContext.get('req_id')
-        try {
-          if (req_id) {
-            this.fields.req_id = req_id
-          }
-          // @ts-ignore
-          return super[level](...params)
-        } finally {
-          delete this.fields.req_id
-        }
-      }
-
-      // @ts-ignore
-      debug(...params): void {
-        // @ts-ignore
-        return this.log('debug', params)
-      }
-
-      // @ts-ignore
-      info(...params): void {
-        // @ts-ignore
-        return this.log('info', params)
-      }
-
-      // @ts-ignore
-      warn(...params): void {
-        // @ts-ignore
-        return this.log('warn', params)
-      }
-
-      // @ts-ignore
-      error(...params): void {
-        // @ts-ignore
-        return this.log('error', params)
-      }
-    }(loggerOptions)
-  }
-});
-
 // TypeORM
 container.bind<IDbProvider>(TYPES.dbProvider).toProvider<Connection>(context => {
   return async () => {
@@ -129,10 +49,10 @@ container.bind<IDbProvider>(TYPES.dbProvider).toProvider<Connection>(context => 
       namingStrategy: new class extends SnakeNamingStrategy {
         columnName(propertyName: string, customName: string, embeddedPrefixes: string[]): string {
           switch (propertyName){
-            // case 'id_ancestor':
-              // return 'ancestor'
-            // case 'id_descendant':
-            //   return 'descendant'
+            case 'id_ancestor':
+              return 'ancestor'
+            case 'id_descendant':
+              return 'descendant'
             default:
               return super.columnName(propertyName, customName, embeddedPrefixes);
           }
@@ -147,45 +67,7 @@ container.bind<IDbProvider>(TYPES.dbProvider).toProvider<Connection>(context => 
       entities: [
         "src/entity/**/*.ts",
       ],
-      migrations: [
-        "src/migration/**/*.ts"
-      ],
-      subscribers: [
-        "src/subscriber/**/*.ts"
-      ],
-      cli: {
-        entitiesDir: "src/entity",
-        migrationsDir: "src/migration",
-        subscribersDir: "src/subscriber"
-      },
-      logger: new class CustomTypeORMLogger implements TypeORMLogger {
-        constructor(public logger: Logger) {
-        }
-
-        logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
-          this.logger.debug(query, parameters || '')
-        }
-
-        logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-          this.logger.error(error, query, parameters || '')
-        }
-
-        logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-        }
-
-        logSchemaBuild(message: string, queryRunner?: QueryRunner) {
-          this.logger.info(message)
-        }
-
-        logMigration(message: string, queryRunner?: QueryRunner) {
-          this.logger.info(message)
-        }
-
-        log(level: "log" | "info" | "warn", message: any, queryRunner?: QueryRunner) {
-          // TypeORM No classes were found using the provided glob pattern:  "src/subscriber/**/*.ts"
-          // this.logger[level](message)
-        }
-      }((context.container as CustomContainer).createLogger({name: 'TypeORM'}))
+      logger: "simple-console"
     } as PostgresConnectionOptions
 
     const result = await createConnection(ormConfig as ConnectionOptions)
