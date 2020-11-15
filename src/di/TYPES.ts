@@ -1,9 +1,9 @@
 const TYPES={
-  Connection: Symbol('Connection'),
-  ConnectionProvider: Symbol('ConnectionProvider'),
+  db: Symbol('db'),
+  dbProvider: Symbol('db'),
   createLogger: Symbol('createLogger'),
   EntityManager: Symbol('EntityManager'),
-  sendMail: Symbol('sendMail'),
+  constants: Symbol('constants'),
 }
 
 export default TYPES

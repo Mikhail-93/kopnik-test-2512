@@ -9,13 +9,12 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "allowJs": true,
-
     "baseUrl": "src",
     "paths": {
       "@/*": ["./*"],
       "@api/*": ["./api/*"],
       "@entity/*": ["./entity/*"]
-    },
+    }
   },
   "include": [
     "src/**/*"

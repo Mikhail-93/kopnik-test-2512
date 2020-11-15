@@ -1,5 +1,5 @@
 import {Connection} from "typeorm/index";
 
-export default interface IConnectionProvider {
+export default interface IDbProvider {
   (): Promise<Connection>
 }
