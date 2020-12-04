@@ -6,14 +6,15 @@ module.exports = function errorHandler(err: Error, req: Request, res: Response, 
   res.status(201)
     .json({
       error: {
-        // code: err.code || 'unknown',
+        code: (err as any).code || undefined,
         message: err.message,
         stack: err.stack,
       }
     })
 
   try {
-    container.createLogger({name: basename(__filename)}).error(err)
+    // постгрес кидает ошибку не в объекте ошибка, а в похожем по составу полей объекте непонятного класса
+    container.createLogger({name: basename(__filename)}).error(err instanceof Error ? err : {err})
   } catch (error) {
   }
 

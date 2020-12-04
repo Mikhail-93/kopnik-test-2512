@@ -2,6 +2,7 @@ import TYPES from "@/di/TYPES";
 import {SnakeNamingStrategy} from "typeorm-naming-strategies";
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 import container, {CustomContainer} from "@/di/container";
+import DbLogger from "@/di/db/DbLogger";
 
 container.bind<PostgresConnectionOptions>(TYPES.dbOptions).toDynamicValue(context => {
   const result = {
@@ -19,7 +20,7 @@ container.bind<PostgresConnectionOptions>(TYPES.dbOptions).toDynamicValue(contex
       entitiesDir: "src/entity",
       migrationsDir: "src/migration",
     },
-    logger: "simple-console"
+    logger: new DbLogger(container.createLogger({name: 'db'}))
   } as PostgresConnectionOptions
   return result
 }).inSingletonScope()

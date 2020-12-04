@@ -9,7 +9,12 @@
     "typeorm:schema:log": "node --require ts-node/register -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js schema:log",
     "typeorm:migration:create": "node --require ts-node/register -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:create",
     "typeorm:migration:generate": "node --require ts-node/register -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:generate",
-    "typeorm:migration:run": "node --require ts-node/register -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:run"
+    "typeorm:migration:run": "node --require ts-node/register -r tsconfig-paths/register -r dotenv/config ./node_modules/typeorm/cli.js migration:run",
+    "env:test":"cp .env.test .env",
+    "env:development":"cp .env.development .env",
+
+    "start:test": "npm run env:test && npm start",
+    "typeorm:migration:run:test": "npm run env:test && npm run typeorm:migration:run"
   },
   "devDependencies": {
     "@types/express": "^4.17.7",
@@ -40,6 +45,7 @@
     "nodemon": "^2.0.4",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.10",
+    "sql-formatter": "^2.3.3",
     "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.29",
     "typeorm-naming-strategies": "^2.0.0",

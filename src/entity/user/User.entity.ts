@@ -58,11 +58,11 @@ export class User {
   @TreeChildren()
   subordinates: User[]
 
-  @ManyToOne(() => User, foreman => foreman.foremanRequests)
+  @ManyToOne(() => User, foreman => foreman.subordinateRequests)
   foremanRequest: User
 
   @OneToMany(() => User, request => request.foremanRequest)
-  foremanRequests: User[]
+  subordinateRequests: User[]
 
   @Column({enum: RoleEnum, name: 'role', default: RoleEnum.Stranger})
   role: RoleEnum
@@ -72,6 +72,9 @@ export class User {
 
   @Column({})
   lastName: string
+
+  @Column({})
+  href: string
 
   @Column({})
   patronymic: string
@@ -87,14 +90,14 @@ export class User {
   @Column({type: 'decimal', precision: 14, scale: 11})
   longitude: number
 
-  @Column({enum: StatusEnum})
+  @Column({enum: StatusEnum, default: StatusEnum.New})
   status: StatusEnum
 
   @Column({default: false})
   isWitness: boolean
 
   @Column({})
-  birthYear: number
+  birthyear: number
 
   @ManyToOne(() => User, witness => witness.witnessRequests,)
   witness: User
@@ -104,6 +107,6 @@ export class User {
   // @OneToMany(() => OAuth, oauth => oauth.user)
   // oauths: OAuth[]
 
-  @Column()
-  identifier: number
+  @Column({type: 'bigint'})
+  vkId: number
 }

@@ -6,44 +6,30 @@ import {resolve} from "path";
 import httpContext from 'express-cls-hooked'
 import container from "@/di/container";
 import _ from 'lodash'
+import ConsoleStream from "@/di/createLogger/ConsoleStream";
+import ContextStream from "@/di/createLogger/ContextStream";
 
 container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((context) => {
   return (options = {}) => {
-    function reqSerializer(req) {
-      return {
-        method: req.method,
-        url: req.url,
-        headers: req.headers
-      };
-    }
-    const log = Logger.createLogger({
-      name: 'myapp',
-      serializers: {
-        req: reqSerializer
-      }
-    });
-    return log
-
-
-
-
     const defaultOptions: LoggerOptions = {
       name: "main",
       streams: [
-        /*      заменил на консоль лог
-                {
-                  level: "debug",
-                  stream: process.stdout            // log INFO and above to stdout
-                },*/
+        {
+          level: 'debug',
+          type: "raw",
+          stream: new ContextStream() as any
+        },
+        {
+          level: 'debug',
+          type: "raw",
+          stream: new ConsoleStream() as any
+        },
       ],
       serializers: {
         ...Logger.stdSerializers,
-        body() {
-          return {}
-        },
-        req() {
-          return {}
-        },
+        msg(msg){
+          return msg
+        }
       },
       src: true
     }
@@ -51,26 +37,17 @@ container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((contex
     // в dev режиме сами отправляем логи в Логсташ
     switch (process.env.NODE_ENV) {
       case 'development':
-/*        (defaultOptions.streams as any).push({
-          level: 'debug',
-          type: "raw",
-          stream: bunyantcp.createStream({
-            host: 'urz.open.ru',
-            // port: 9998,
-            port: 9995,
-          })
-        })*/
+        /*        (defaultOptions.streams as any).push({
+                  level: 'debug',
+                  type: "raw",
+                  stream: bunyantcp.createStream({
+                    host: 'urz.open.ru',
+                    // port: 9998,
+                    port: 9995,
+                  })
+                })*/
         break
       case 'test':
-        defaultOptions.serializers = {
-          ...defaultOptions.serializers,
-          req() {
-            return {}
-          },
-          body() {
-            return {}
-          },
-        }
         break
       case 'production':
       case 'staging':
@@ -86,24 +63,8 @@ container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((contex
     const loggerOptions = _.merge(defaultOptions, options)
     return new class CustomLogger extends Logger {
       log(level: 'debug' | 'warn' | 'info' | 'error', params: any[]) {
-        // if (process.env.NODE_ENV==='test'){
-        console[level](this.fields.name, params)
-        // }
-        const req_id = httpContext.get('req_id')
-        const wp = httpContext.get('wp')
-        try {
-          if (req_id) {
-            this.fields.req_id = req_id
-          }
-          if (wp){
-            this.fields.wp_id=wp.id
-          }
           // @ts-ignore
           return super[level](...params)
-        } finally {
-          delete this.fields.req_id
-          delete this.fields.wp_id
-        }
       }
 
       // @ts-ignore
@@ -131,4 +92,4 @@ container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((contex
       }
     }(loggerOptions)
   }
-});
+})

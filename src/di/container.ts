@@ -42,7 +42,7 @@ container.bind<IConstants>(TYPES.constants).toDynamicValue(context => {
 }).inSingletonScope()
 
 // createLogger
-import './createLogger'
+import './createLogger/createLogger'
 
 // db
 import './db/dbOptions'

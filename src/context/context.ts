@@ -3,11 +3,18 @@
  */
 
 
-import * as aaa from 'express-cls-hooked'
+import {get, set} from 'express-cls-hooked'
+import {User} from "@entity/user/User.entity";
 
-const context = aaa as {
-  get: (key: string) => any,
-  set: (key: string, value: any) => any,
+const context = {
+  get: get as (key: string) => any,
+  set: set as (key: string, value: any) => any,
+  get user() {
+    return get('user') as User
+  },
+  get req_id() {
+    return get('req_id') as number
+  }
 }
 
 export default context

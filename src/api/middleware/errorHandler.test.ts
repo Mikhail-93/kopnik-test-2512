@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "@/app";
 
 describe('errorHandler', () => {
-  it('Текущее согласование не завершено', async () => {
+  it.skip('throw error', async () => {
     const res = await request(app)
       .get('/api/utils/error')
       .send()

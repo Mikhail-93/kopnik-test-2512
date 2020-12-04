@@ -18,7 +18,7 @@ export default function userFactory(prefix?: string, fields: Partial<User> = {},
   result.lastName = prefix
   result.firstName = prefix
   result.patronymic = prefix
-  result.birthYear = 2020
+  result.birthyear = 2020
   result.passport = "0123"
   result.latitude = 30
   result.longitude = 50
@@ -30,7 +30,7 @@ export default function userFactory(prefix?: string, fields: Partial<User> = {},
 
   //OAuth
   // const oauth = new OAuth()
-  result.identifier = uniq
+  result.vkId = uniq
   // oauth.provider = 'vk.com'
   // oauth.accessToken = prefix + '_' + uniq
   // result.oauths = [oauth]

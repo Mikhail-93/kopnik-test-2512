@@ -5,4 +5,7 @@
   <configuration default="false" name="ts-node" type="NodeJSConfigurationType" singleton="true" node-parameters="--require ts-node/register -r tsconfig-paths/register -r dotenv/config" path-to-js-file="src/index.ts" working-dir="$PROJECT_DIR$">
     <method v="2" />
   </configuration>
+  <configuration default="false" name="ts-node" type="NodeJSConfigurationType" singleton="true" node-parameters="--require ts-node/register -r tsconfig-paths/register -r dotenv/config" path-to-js-file="src/index.ts" working-dir="$PROJECT_DIR$">
+    <method v="2" />
+  </configuration>
 </component>
