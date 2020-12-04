@@ -1,4 +1,4 @@
-enum UserRole {
+enum RoleEnum {
   Kopnik = 1, // Копный муж
   DanilovKopnik = 2, // Подкопный муж (упрещенные требования, предложенные С. Даниловым)
   FutureKopnik = 3, // Стремлюсь стать Копным мужем
@@ -6,4 +6,4 @@ enum UserRole {
   Stranger = 5, // Чужой не член общины (наблюдатель / невидимка / аватарка / провинившийся изгой / инородец)
 }
 
-export default UserRole
+export default RoleEnum

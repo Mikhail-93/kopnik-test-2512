@@ -1,6 +1,6 @@
-import container from "@/di/config"
+import container from "@/di/container"
 import {getManager, getRepository} from "typeorm"
-import {User} from "@entity/user/User"
+import {User} from "@entity/user/User.entity"
 import userFactory from "@/testUtils/userFactory";
 
 describe('User', () => {

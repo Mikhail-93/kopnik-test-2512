@@ -1,6 +1,7 @@
+/*
 import {Entity, PrimaryGeneratedColumn, Column, Tree, ManyToOne, TreeParent, TreeChildren, OneToMany} from "typeorm";
-import UserRole from "@entity/user/UserRole";
-import UserStatus from "@entity/user/UserStatus";
+import RoleEnum from "@entity/user/RoleEnum";
+import StatusEnum from "@entity/user/StatusEnum";
 import {User} from "@entity/user/User";
 
 @Entity()
@@ -20,3 +21,4 @@ export class OAuth {
   @Column()
   provider: string
 }
+*/

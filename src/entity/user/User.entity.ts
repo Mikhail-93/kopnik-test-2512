@@ -7,47 +7,52 @@ import {
   TreeParent,
   TreeChildren,
   OneToMany,
-  Generated, PrimaryColumn, CreateDateColumn
+  Generated, PrimaryColumn, CreateDateColumn, UpdateDateColumn
 } from "typeorm";
-import UserRole from "@entity/user/UserRole";
-import UserStatus from "@entity/user/UserStatus";
-import {OAuth} from "@entity/user/OAuth";
+import RoleEnum from "@entity/user/RoleEnum";
+import StatusEnum from "@entity/user/StatusEnum";
+// import {OAuth} from "@entity/user/OAuth";
+import LocaleEnum from "@entity/LocaleEnum";
+
 // import {EntityWithSequence, NextVal} from "typeorm-sequence";
 
 @Entity('users')
-@Tree("closure-table")
+@Tree("materialized-path")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @CreateDateColumn()
   createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
   /**
    *  Ссылка-приглашение на чат с заверителем
    *  @deprecated надо всмпонить почему депрекедет... потому что вроде как используется...
    */
-  @Column({nullable: true, })
+  @Column({nullable: true,})
   assuranceChatInviteLink: string
 
-  @Column({nullable: true, })
+  @Column({nullable: true,})
   assuranceChatId: number;
   /**
    * Чат десятки, если юзер когда-либо становился "Старшиной"
    */
-  @Column({nullable: true, })
+  @Column({nullable: true,})
   tenChatInviteLink: string
 
-  @Column({nullable: true, })
+  @Column({nullable: true,})
   tenChatId: number
 
-  @Column({nullable: false})
+  @Column({default: 1})
   rank: number
 
-  @Column({nullable: true})
+  @Column({enum: LocaleEnum, default: LocaleEnum.ru})
   locale: string
 
   @TreeParent()
-  // @ManyToOne(() => User, foreman => foreman.subordinates, {})
+    // @ManyToOne(() => User, foreman => foreman.subordinates, {})
   foreman: User
 
   @TreeChildren()
@@ -59,8 +64,8 @@ export class User {
   @OneToMany(() => User, request => request.foremanRequest)
   foremanRequests: User[]
 
-  @Column({enum: UserRole, name:'kopnik_role'})
-  role: UserRole
+  @Column({enum: RoleEnum, name: 'role', default: RoleEnum.Stranger})
+  role: RoleEnum
 
   @Column({})
   firstName: string
@@ -69,23 +74,23 @@ export class User {
   lastName: string
 
   @Column({})
-  patronymic : string
+  patronymic: string
 
   @Column()
-  photo : string
+  photo: string
 
-  @Column({})
-  passportCode: string
+  @Column()
+  passport: string
 
-  @Column({type:'decimal', precision:14, scale:11, nullable: true})
+  @Column({type: 'decimal', precision: 14, scale: 11})
   latitude: number
-  @Column({type:'decimal', precision:14, scale:11, nullable: true})
+  @Column({type: 'decimal', precision: 14, scale: 11})
   longitude: number
 
-  @Column({enum: UserStatus})
-  status: UserStatus
+  @Column({enum: StatusEnum})
+  status: StatusEnum
 
-  @Column({})
+  @Column({default: false})
   isWitness: boolean
 
   @Column({})
@@ -96,6 +101,9 @@ export class User {
   @OneToMany(() => User, request => request.witness)
   witnessRequests: User[]
 
-  @OneToMany(() => OAuth, oauth => oauth.user)
-  oauths: OAuth[]
+  // @OneToMany(() => OAuth, oauth => oauth.user)
+  // oauths: OAuth[]
+
+  @Column()
+  identifier: number
 }

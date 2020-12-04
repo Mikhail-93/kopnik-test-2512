@@ -1,7 +1,7 @@
-import {User} from "@entity/user/User";
-import UserStatus from "@entity/user/UserStatus";
-import UserRole from "@entity/user/UserRole";
-import {OAuth} from "@entity/user/OAuth";
+import {User} from "@entity/user/User.entity";
+import StatusEnum from "@entity/user/StatusEnum";
+import RoleEnum from "@entity/user/RoleEnum";
+// import {OAuth} from "@entity/user/OAuth";
 
 let TEST_ID = -1
 
@@ -19,21 +19,21 @@ export default function userFactory(prefix?: string, fields: Partial<User> = {},
   result.firstName = prefix
   result.patronymic = prefix
   result.birthYear = 2020
-  result.passportCode = "0123"
+  result.passport = "0123"
   result.latitude = 30
   result.longitude = 50
   result.photo = 'photo/' + prefix
-  result.status = UserStatus.Confirmed
+  result.status = StatusEnum.Confirmed
   result.locale = 'ru'
-  result.role = UserRole.Kopnik
+  result.role = RoleEnum.Kopnik
   result.rank = 1
 
   //OAuth
-  const oauth = new OAuth()
-  oauth.identifier = uniq
-  oauth.provider = 'vk.com'
-  oauth.accessToken = prefix + '_' + uniq
-  result.oauths = [oauth]
+  // const oauth = new OAuth()
+  result.identifier = uniq
+  // oauth.provider = 'vk.com'
+  // oauth.accessToken = prefix + '_' + uniq
+  // result.oauths = [oauth]
 
   // generated
   result.createdAt= new Date

@@ -8,19 +8,19 @@ export interface IConstants{
 const constants = {
   development: {
     db: {
-      "synchronize": true,
+      "synchronize": false,
       "logging": true,
     }
   },
   test: {
     db: {
-      "synchronize": true,
+      "synchronize": false,
       "logging": true,
     }
   },
   production: {
     db: {
-      // "synchronize": true,
+      "synchronize": false,
       "logging": true,
     }
   },

@@ -9,3 +9,4 @@ temp/
 /logs/*.log.*
 .env
 .env.*
+/var
