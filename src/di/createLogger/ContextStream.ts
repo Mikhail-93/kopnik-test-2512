@@ -1,5 +1,5 @@
 import context from "@/context/context";
-import plain from "@/plain/plain";
+import plain from "@entity/user/plain";
 
 /**
  * Псевдо-стрим для добавления в лог переменных из контекста

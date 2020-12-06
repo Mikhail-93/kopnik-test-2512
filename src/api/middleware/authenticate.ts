@@ -9,7 +9,9 @@ import {User} from "@entity/user/User.entity";
 import {getRepository} from "typeorm";
 
 /**
- * ПОгружает текущего пользователя в контекст
+ * Аутентифицирует пользователя на основе его сессионных данных
+ * Если сессионные данные получены от ВК, то session.mid===vk.id
+ * Если сессионные данные получены от сервера приложений, то у них session.mid===kopnik.id
  */
 export default async function (req: Request, res: Response, next: Function) {
   const logger = container.createLogger({name: basename(__filename),})
@@ -27,10 +29,12 @@ export default async function (req: Request, res: Response, next: Function) {
 
   const repository = getRepository(User)
   let user = await repository.findOne({
+    // если сессионные данные получены от ВК, то session.mid===vk.id
+    // если сессионные данные получены от сервера приложений, то у них session.mid===kopnik.id
     where: {
-      vkId: session.user.id
+      [session.secret === "kopnik.org token" ? 'id' : 'vkId']: session.mid
     },
-    relations: ['subordinates', 'subordinateRequests']
+    relations: ['subordinates', 'foremanRequests']
   })
 
   if (!user) {
@@ -42,7 +46,7 @@ export default async function (req: Request, res: Response, next: Function) {
       passport: '',
       latitude: 0,
       longitude: 0,
-      birthyear: 19, // TODO: import from VK
+      birthYear: 19, // TODO: import from VK
       href: session.user.href,
       vkId: session.user.id,
     })

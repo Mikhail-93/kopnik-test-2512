@@ -15,7 +15,7 @@ import KError from "@/error/KError";
  * Проверяет полномочия пользователя
  */
 
-export default function (options: { statuses?: StatusEnum[], roles?: RoleEnum[] }) {
+export default function (options: { statuses?: StatusEnum[], roles?: RoleEnum[] }= {}) {
   return function (req, res, next) {
     const logger = container.createLogger({name: basename(__filename),})
 

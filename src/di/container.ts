@@ -10,6 +10,10 @@ import {Logger as TypeORMLogger} from "typeorm"
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 import constants, {IConstants} from "@/di/constants";
 import {SnakeNamingStrategy} from "typeorm-naming-strategies";
+import IDbProvider from "@/di/db/IDbProvider";
+import IVKProvider from "@/di/vk/IVKProvider";
+import {VK} from "vk-io";
+
 
 export class CustomContainer extends Container {
   get constants(): IConstants {
@@ -31,6 +35,14 @@ export class CustomContainer extends Container {
   get dbProvider(): IDbProvider {
     return this.get<IDbProvider>(TYPES.dbProvider)
   }
+
+  get provideVk(): IVKProvider {
+    return this.get<IVKProvider>(TYPES.vkProvider)
+  }
+
+  get vk(): VK {
+    return this.get<VK>(TYPES.vkIo)
+  }
 }
 
 const container = new CustomContainer();
@@ -47,5 +59,9 @@ import './createLogger/createLogger'
 // db
 import './db/dbOptions'
 import './db/db'
-import IDbProvider from "@/di/db/IDbProvider";
+
+// vk
+import "@/di/vk/vk";
+import "@/di/vk/vk-io";
+
 

@@ -1,15 +1,12 @@
-import md5 from 'md5'
 import {Request, Response} from "express";
 import response from "@api/response";
 import {User} from "@entity/user/User.entity";
-import merge from "@/merge/merge";
 import {getRepository} from "typeorm";
-import plain from "@/plain/plain";
+import plain from "@entity/user/plain";
+import createUser from "@entity/user/createUser";
 
 export default async function (req: Request, res: Response,) {
-  const user = new User()
-  merge(user, req.body)
-  await getRepository(User).save(user)
+  const user = await createUser(null, req.body)
 
-  res.json(response(plain(user,)))
+  res.json(response(user.id))
 }

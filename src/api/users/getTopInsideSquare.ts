@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import container from "@/di/container";
 import {basename} from "path";
 import context from "@/context/context";
-import {getRepository} from "typeorm";
+import {Between, getRepository, LessThan, MoreThan} from "typeorm";
 import {User} from "@entity/user/User.entity";
 import plain from "@entity/user/plain";
 import response from "@api/response";
@@ -15,10 +15,15 @@ import plainForCurrentUser from "@entity/user/plainForCurrentUser";
  */
 export default async function (req: Request, res: Response) {
   const logger = container.createLogger({name: basename(__filename),})
-  const ids = req.query.ids.length ? (req.query.ids as string).split(',') : []
-  const users: User[] = ids.length ? await getRepository(User).findByIds(ids, {
-    relations: ['foreman', 'subordinates']
-  }) : [context.user]
+  const {x1, y1, x2, y2, count, maxRank} = req.query
+
+  const users = await getRepository(User).find({
+    where: {
+      latitude: Between(y1, y2),
+      longitude: Between(x1, x2),
+    },
+    relations: []
+  })
 
   res.json(response(users.map(eachUser => plainForCurrentUser(eachUser,))))
 }

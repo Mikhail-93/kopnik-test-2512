@@ -6,9 +6,9 @@ module.exports = function errorHandler(err: Error, req: Request, res: Response, 
   res.status(201)
     .json({
       error: {
-        code: (err as any).code || undefined,
-        message: err.message,
-        stack: err.stack,
+        error_code: (err as any).code || undefined,
+        error_msg: err.message,
+        error_stack: err.stack,
       }
     })
 

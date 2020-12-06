@@ -1,7 +1,7 @@
 import container from "@/di/container"
 import {getManager, getRepository} from "typeorm"
 import {User} from "@entity/user/User.entity"
-import userFactory from "@/testUtils/userFactory";
+import userFactory from "@entity/user/userFactory";
 
 describe('User', () => {
   beforeEach(async () => {
@@ -10,7 +10,7 @@ describe('User', () => {
 
   it('create', async () => {
     const user = userFactory('create', {})
-    const manager= getManager()
+    const manager = getManager()
     await manager.save(user)
   })
 })

@@ -7,7 +7,7 @@ import {
   TreeParent,
   TreeChildren,
   OneToMany,
-  Generated, PrimaryColumn, CreateDateColumn, UpdateDateColumn
+  Generated, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Index
 } from "typeorm";
 import RoleEnum from "@entity/user/RoleEnum";
 import StatusEnum from "@entity/user/StatusEnum";
@@ -17,7 +17,7 @@ import LocaleEnum from "@entity/LocaleEnum";
 // import {EntityWithSequence, NextVal} from "typeorm-sequence";
 
 @Entity('users')
-@Tree("materialized-path")
+@Tree("closure-table")
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,18 +27,13 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date
-  /**
-   *  Ссылка-приглашение на чат с заверителем
-   *  @deprecated надо всмпонить почему депрекедет... потому что вроде как используется...
-   */
-  @Column({nullable: true,})
-  assuranceChatInviteLink: string
 
   @Column({nullable: true,})
-  assuranceChatId: number;
-  /**
-   * Чат десятки, если юзер когда-либо становился "Старшиной"
-   */
+  witnessChatInviteLink: string
+
+  @Column({nullable: true,})
+  witnessChatId: number;
+
   @Column({nullable: true,})
   tenChatInviteLink: string
 
@@ -52,17 +47,16 @@ export class User {
   locale: string
 
   @TreeParent()
-    // @ManyToOne(() => User, foreman => foreman.subordinates, {})
   foreman: User
 
   @TreeChildren()
   subordinates: User[]
 
-  @ManyToOne(() => User, foreman => foreman.subordinateRequests)
+  @ManyToOne(() => User, foreman => foreman.foremanRequests)
   foremanRequest: User
 
   @OneToMany(() => User, request => request.foremanRequest)
-  subordinateRequests: User[]
+  foremanRequests: User[]
 
   @Column({enum: RoleEnum, name: 'role', default: RoleEnum.Stranger})
   role: RoleEnum
@@ -85,9 +79,12 @@ export class User {
   @Column()
   passport: string
 
-  @Column({type: 'decimal', precision: 14, scale: 11})
+  @Index()
+  @Column({type: 'float', default: 0,})
   latitude: number
-  @Column({type: 'decimal', precision: 14, scale: 11})
+
+  @Index()
+  @Column({type: 'float', default: 0,})
   longitude: number
 
   @Column({enum: StatusEnum, default: StatusEnum.New})
@@ -96,17 +93,23 @@ export class User {
   @Column({default: false})
   isWitness: boolean
 
-  @Column({})
-  birthyear: number
+  @Column()
+  birthYear: number
 
   @ManyToOne(() => User, witness => witness.witnessRequests,)
   witness: User
+
   @OneToMany(() => User, request => request.witness)
   witnessRequests: User[]
 
   // @OneToMany(() => OAuth, oauth => oauth.user)
   // oauths: OAuth[]
 
+  @Index("vkId", {unique: true})
   @Column({type: 'bigint'})
   vkId: number
+
+  constructor(id?: number) {
+    this.id = id
+  }
 }

@@ -15,10 +15,10 @@ import plainForCurrentUser from "@entity/user/plainForCurrentUser";
  */
 export default async function (req: Request, res: Response) {
   const logger = container.createLogger({name: basename(__filename),})
-  const ids = req.query.ids.length ? (req.query.ids as string).split(',') : []
-  const users: User[] = ids.length ? await getRepository(User).findByIds(ids, {
-    relations: ['foreman', 'subordinates']
-  }) : [context.user]
 
-  res.json(response(users.map(eachUser => plainForCurrentUser(eachUser,))))
+  const result = await getRepository(User).findOneOrFail( {
+    relations: ['foreman', 'subordinates']
+  })
+
+  res.json(response(plainForCurrentUser(result)))
 }
