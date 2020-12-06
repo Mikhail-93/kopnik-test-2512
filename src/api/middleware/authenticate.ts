@@ -6,7 +6,8 @@ import container from "@/di/container";
 import {basename} from "path";
 import context from "@/context/context";
 import {User} from "@entity/user/User.entity";
-import {getRepository} from "typeorm";
+import {getManager, getRepository} from "typeorm";
+import getUserByToken from "@entity/user/getUserByToken";
 
 /**
  * Аутентифицирует пользователя на основе его сессионных данных
@@ -21,43 +22,38 @@ export default async function (req: Request, res: Response, next: Function) {
     next()
     return
   }
-  const session = JSON.parse(Base64.decode(req.header('authorization')))
-  const sig = md5(`expire=${session.expire}mid=${session.mid}secret=${session.secret}sid=${session.sid}${process.env.VK_CLIENT_SECRET}`)
-  if (sig !== session.sig) {
-    throw new Error('Hacker')
+  const token = JSON.parse(Base64.decode(req.header('authorization')))
+  const sig = md5(`expire=${token.expire}mid=${token.mid}secret=${token.secret}sid=${token.sid}${process.env.VK_CLIENT_SECRET}`)
+  if (sig !== token.sig) {
+    throw new Error('Wrong token signature')
+  }
+  if (token.expire < new Date) {
+    throw new Error('Token expired')
   }
 
-  const repository = getRepository(User)
-  let user = await repository.findOne({
-    // если сессионные данные получены от ВК, то session.mid===vk.id
-    // если сессионные данные получены от сервера приложений, то у них session.mid===kopnik.id
-    where: {
-      [session.secret === "kopnik.org token" ? 'id' : 'vkId']: session.mid
-    },
-    relations: ['subordinates', 'foremanRequests']
-  })
+  let user = await getUserByToken(token)
 
   if (!user) {
-    user = repository.create({
-      firstName: session.user.first_name || '',
-      lastName: session.user.last_name || '',
+    logger.info({token}, `create new user`)
+    const em = getManager()
+    user = em.create(User, {
+      firstName: token.user.first_name || '',
+      lastName: token.user.last_name || '',
       patronymic: '',
       photo: 'TODO: import from VK', //TODO: import from VK
       passport: '',
       latitude: 0,
       longitude: 0,
       birthYear: 19, // TODO: import from VK
-      href: session.user.href,
-      vkId: session.user.id,
+      href: token.user.href,
+      vkId: token.user.id,
     })
-    await repository.save<User>(user)
+    await em.save(user)
   }
 
   context.set('user', user)
 
-  logger.debug({
-    user,
-  }, `${user.id} : ${user.vkId} ${user.firstName} ${user.patronymic} ${user.lastName}`)
+  logger.debug(`${user.vkId} -> ${user.id} : ${user.firstName} ${user.patronymic} ${user.lastName}`)
 
   next()
 }

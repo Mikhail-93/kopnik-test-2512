@@ -12,23 +12,37 @@ import merge from "@entity/user/merge";
 import StatusEnum from "@entity/user/StatusEnum";
 import RoleEnum from "@entity/user/RoleEnum";
 import KError from "@/error/KError";
+import transaction from "@/transaction/transaction";
+import getContext from "@/context/getContext";
+import setUserForeman from "@entity/user/setUserForeman";
 
 
 /**
- * opi/webhook/create -> opi/webhook/project_name/package_name/create
+ *
  */
 export default async function (req: Request, res: Response) {
-  const logger = container.createLogger({name: basename(__filename),}),
-    body = req.body
+  await transaction(async () => {
+    const logger = container.createLogger({name: basename(__filename),})
+    const {user, em} = getContext()
+    const {id} = req.body
 
-  const foreman = await getRepository(User).findOneOrFail(req.body.id)
-  if (foreman.status != StatusEnum.Confirmed || ![RoleEnum.Kopnik, RoleEnum.DanilovKopnik].includes(foreman.role)) {
-    throw new KError('Invalid Foreman: has wrong status or role', 1510)
-  }
+    // reset foreman
+    if (user.foreman && id) {
+      logger.info('reset foreman before new foreman request')
+      await setUserForeman(user, null)
+    }
 
-  const user = context.user
-  user.foremanRequest = foreman
+    if (id) {
+      const foreman = await em.findOneOrFail(User, id)
+      if (foreman.status != StatusEnum.Confirmed || ![RoleEnum.Kopnik, RoleEnum.DanilovKopnik].includes(foreman.role)) {
+        throw new KError('Invalid Foreman: has wrong status or role', 1510)
+      }
+      user.foremanRequest = foreman
+    } else {
+      user.foremanRequest = null
+    }
 
-  await getRepository(User).save(user)
-  res.json(response(true))
+    await em.save(user)
+    res.json(response(true))
+  })
 }

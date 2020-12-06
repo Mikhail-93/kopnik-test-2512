@@ -13,7 +13,7 @@ import get from "@api/users/get";
 import login from "@api/test/login";
 import on_createUser from "@api/test/on_createUser";
 import on_authorize from "@api/test/on_authorize";
-import dbProvider from "@api/middleware/dbProvider";
+import db from "@api/middleware/db";
 import authorize from "@api/middleware/authorize";
 import getEx from "@api/users/getEx";
 import getWitnessRequests from "@api/users/getWitnessRequests";
@@ -30,6 +30,7 @@ import getSubordinates from "@api/users/getSubordinates";
 import getForeman from "@api/users/getForeman";
 import StatusEnum from "@entity/user/StatusEnum";
 import RoleEnum from "@entity/user/RoleEnum";
+import {Transaction} from "typeorm";
 
 const app = express()
 app.use(cors({
@@ -38,7 +39,7 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 app.use(httpContext.middleware)
-app.use(dbProvider)
+app.use(db)
 app.use(welcome)
 app.use(auth)
 

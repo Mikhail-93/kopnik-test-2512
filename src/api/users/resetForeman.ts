@@ -10,31 +10,34 @@ import response from "@api/response";
 import plainForCurrentUser from "@entity/user/plainForCurrentUser";
 import merge from "@entity/user/merge";
 import KError from "@/error/KError";
+import transaction from "@/transaction/transaction";
+import getContext from "@/context/getContext";
+import setUserForeman from "@entity/user/setUserForeman";
 
 
 /**
  *
  */
 export default async function (req: Request, res: Response) {
-  const logger = container.createLogger({name: basename(__filename),}),
-    {id} = req.body
+  await transaction(async () => {
+    const logger = container.createLogger({name: basename(__filename),})
+    const {user, em} = getContext()
+    const {id} = req.body
 
-  const user = context.user
-
-  if (id) {
-    const subordinate = await getRepository(User).findOneOrFail(id)
-    if (user.subordinates.find(eachSubordinate => eachSubordinate.id == subordinate.id)) {
-      logger.info('remove subordinate from subordinates')
-      subordinate.foreman = null
-      await getRepository(User).save(subordinate)
+    // remove from subordinates
+    if (id) {
+      if (user.subordinates.find(eachSubordinate => eachSubordinate.id == id)) {
+        const subordinate = await em.findOneOrFail(User, id,)
+        logger.info('remove from subordinates')
+        await setUserForeman(subordinate, null )
+      } else {
+        throw new KError('Invalid Subordinate', 1512)
+      }
     } else {
-      throw new KError('Invalid Subordinate', 1512)
+      logger.info('remove foreman')
+      await setUserForeman(user, null)
     }
-  } else {
-    logger.info('remove foreman')
-    user.foreman = null
-    await getRepository(User).save(user)
-  }
 
-  res.json(response(true))
+    res.json(response(true))
+  })
 }

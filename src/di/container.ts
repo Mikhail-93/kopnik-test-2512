@@ -32,7 +32,7 @@ export class CustomContainer extends Container {
     return container.get<Connection>(TYPES.db)
   }
 
-  get dbProvider(): IDbProvider {
+  get provideDatabase(): IDbProvider {
     return this.get<IDbProvider>(TYPES.dbProvider)
   }
 

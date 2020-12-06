@@ -1,7 +1,19 @@
-import {EntityManager} from "typeorm";
+import {EntityManager, getManager} from "typeorm";
 import {User} from "@entity/user/User.entity";
+import context from "@/context/context";
 
-export default async function (user: User, foreman: User, em: EntityManager) {
+export default async function (user: User, foreman: User, em?: EntityManager) {
+  em= em || context.em || getManager()
+
+  // decrease ranks for old relations
+  await em.query(`
+    update users 
+        set rank= rank- ${user.rank}
+    WHERE 
+        id IN (SELECT id_ancestor FROM users_closure WHERE id_descendant = ${user.id})
+        AND id <> ${user.id};
+  `)
+
   // remove old relations
   await em.query(`
     DELETE 
@@ -15,7 +27,8 @@ export default async function (user: User, foreman: User, em: EntityManager) {
   await em.save(user)
 
   // create new relations
-  await em.query(`
+  if (foreman) {
+    await em.query(`
     INSERT INTO 
       users_closure (id_ancestor, id_descendant)
     SELECT 
@@ -28,5 +41,15 @@ export default async function (user: User, foreman: User, em: EntityManager) {
       subtree.id_ancestor = ${user.id}
       AND supertree.id_descendant = ${foreman.id}
   `)
+
+    // increase ranks for new relations
+    await em.query(`
+    update users
+        set rank= rank+ ${user.rank}
+    WHERE 
+        id IN (SELECT id_ancestor FROM users_closure WHERE id_descendant = ${user.id})
+        AND id <> ${user.id};
+  `)
+  }
 }
 

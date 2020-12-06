@@ -4,27 +4,80 @@ import {User} from "@entity/user/User.entity"
 import userFactory from "@entity/user/userFactory";
 import createUser from "@entity/user/createUser";
 import setUserForeman from "@entity/user/setUserForeman";
+import transaction from "@/transaction/transaction";
 
 describe('tree', () => {
-  let repository: Repository<User>
+  let repository: Repository<User>,
+    foreman: User,
+    subordinate: User
 
   beforeEach(async () => {
-    await container.dbProvider()
+    await container.provideDatabase()
     repository = getRepository(User)
   })
 
   it('foreman null => user', async () => {
-    // create two users
-    const foreman = await createUser('foreman', {})
-    const subordinate = await createUser('subordinate', {})
+    await transaction(async () => {
+      // create two users
+      foreman = await createUser('foreman', {})
+      subordinate = await createUser('subordinate', {})
 
-    // set foreman
-    await setUserForeman(subordinate, foreman, getManager())
+      // set foreman
+      await setUserForeman(subordinate, foreman, getManager())
 
-    // checks
-    const foreman2 = await repository.findOneOrFail(foreman.id, {
-      relations: ['subordinates']
+      // checks
+      foreman = await repository.findOneOrFail(foreman.id, {
+        relations: ['subordinates']
+      })
+      subordinate = await repository.findOneOrFail(subordinate.id, {
+        relations: ['foreman']
+      })
+      expect(foreman.subordinates[0].id).toBe(subordinate.id)
+      expect(foreman.rank).toBe(2)
+      expect(subordinate.foreman.id).toBe(foreman.id)
+      expect(subordinate.rank).toBe(1)
     })
-    expect(foreman2.subordinates[0].id).toBe(subordinate.id)
+  })
+  it('foreman user=>null', async () => {
+    await transaction(async () => {
+      // create two users
+      foreman = await createUser('foreman', {})
+      subordinate = await createUser('subordinate', {foreman_id: foreman.id})
+
+      // set foreman
+      await setUserForeman(subordinate, null, getManager())
+
+      // checks
+      foreman = await repository.findOneOrFail(foreman.id, {
+        relations: ['subordinates']
+      })
+      subordinate = await repository.findOneOrFail(subordinate.id, {
+        relations: ['foreman']
+      })
+      expect(foreman.subordinates).toHaveLength(0)
+      expect(foreman.rank).toBe(1)
+      expect(subordinate.foreman).toBeNull()
+      expect(subordinate.rank).toBe(1)
+    })
+  })
+
+  it('foreman on create', async () => {
+    await transaction(async () => {
+      // create two users
+      foreman = await createUser('foreman', {})
+      subordinate = await createUser('subordinate', {foreman_id: foreman.id})
+
+      // checks
+      foreman = await repository.findOneOrFail(foreman.id, {
+        relations: ['subordinates']
+      })
+      subordinate = await repository.findOneOrFail(subordinate.id, {
+        relations: ['foreman']
+      })
+      expect(foreman.subordinates[0].id).toBe(subordinate.id)
+      expect(foreman.rank).toBe(2)
+      expect(subordinate.foreman.id).toBe(foreman.id)
+      expect(subordinate.rank).toBe(1)
+    })
   })
 })

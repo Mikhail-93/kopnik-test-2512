@@ -8,7 +8,7 @@ import container from "@/di/container";
 describe('login', () => {
   let user
   beforeAll(async ()=>{
-    await container.dbProvider()
+    await container.provideDatabase()
     user= await createUser('login')
   })
   it('by user id', async () => {
