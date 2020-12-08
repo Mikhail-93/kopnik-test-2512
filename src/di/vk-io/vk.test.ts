@@ -2,12 +2,12 @@ import container from "@/di/container"
 import {getManager, getRepository} from "typeorm"
 import {User} from "@entity/user/User.entity"
 import userFactory from "@entity/user/userFactory";
-import IVk from "@/di/vk/IVk";
+import IVk from "@/di/vk-io/IVk";
 import easyvk from 'easyvk'
 import {VK} from "vk-io";
 import TYPES from "@/di/TYPES";
 
-describe('vk', () => {
+describe.skip('vk', () => {
   let vk: IVk
   beforeEach(async () => {
     vk = await container.provideVk()

@@ -22,10 +22,10 @@ export default function (user: User, options: { isCurrentUser?: boolean, isForem
     foremanRequests: user.foremanRequests?.map(eachSubordinateRequest => eachSubordinateRequest.id),
     witnessRequests: user.witnessRequests?.map(eachWitnessRequest => eachWitnessRequest.id),
 
-    witnessChatId: user.witnessChatId,
-    witnessChatInviteLink: user.witnessChatInviteLink,
-    tenChatId: user.tenChatId,
-    tenChatInviteLink: user.tenChatInviteLink,
+    witnessChatInviteLink: user.witnessChat?.inviteLink,
+    foremanRequestChatInviteLink: user.foremanRequestChat?.inviteLink,
+    tenChatInviteLink: user.tenChat?.inviteLink,
+    mid: user.mid,
   }
   // passport
   if (!options.isCurrentUser && !options.isWitness) {
@@ -38,6 +38,7 @@ export default function (user: User, options: { isCurrentUser?: boolean, isForem
   // foremanRequest
   if (!options.isCurrentUser && !options.isSubordinateRequest) {
     delete result.foremanRequest_id
+    delete result.foremanRequestChatInviteLink
   }
   // foremanRequests
   if (!options.isCurrentUser) {
@@ -50,14 +51,16 @@ export default function (user: User, options: { isCurrentUser?: boolean, isForem
 
   // witnessChatId? witnessChatInviteLink
   if (!options.isCurrentUser && !options.isWitness) {
-    delete user.witnessChatId
-    delete user.witnessChatInviteLink
+    delete result.witnessChatInviteLink
   }
 
   //   tenChatId, tenChatInviteLink
   if (!options.isCurrentUser && !options.isSubordinate) {
-    delete user.tenChatId
-    delete user.tenChatInviteLink
+    delete result.tenChatInviteLink
+  }
+
+  if (process.env.NODE_ENV !== 'test') {
+    delete result.mid
   }
 
   return result

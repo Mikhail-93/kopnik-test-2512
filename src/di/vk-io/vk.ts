@@ -3,9 +3,9 @@ import {Connection, ConnectionOptions, createConnection} from "typeorm";
 import {SnakeNamingStrategy} from "typeorm-naming-strategies";
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 import container, {CustomContainer} from "@/di/container";
-import IVKProvider from "@/di/vk/IVKProvider";
+import IVKProvider from "@/di/vk-io/IVKProvider";
 import easyvk from 'easyvk'
-import IVk from "@/di/vk/IVk";
+import IVk from "@/di/vk-io/IVk";
 import {VK, API} from 'vk-io';
 
 container.bind<IVKProvider>(TYPES.vkProvider).toProvider<IVk>(context => {

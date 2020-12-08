@@ -7,12 +7,14 @@ import {
   TreeParent,
   TreeChildren,
   OneToMany,
-  Generated, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Index
+  Generated, PrimaryColumn, CreateDateColumn, UpdateDateColumn, Index, DeepPartial
 } from "typeorm";
 import RoleEnum from "@entity/user/RoleEnum";
 import StatusEnum from "@entity/user/StatusEnum";
 // import {OAuth} from "@entity/user/OAuth";
 import LocaleEnum from "@entity/LocaleEnum";
+import merge from "@entity/user/merge";
+import Chat from "@entity/Chat.entity";
 
 // import {EntityWithSequence, NextVal} from "typeorm-sequence";
 
@@ -22,9 +24,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Index("vkId", {unique: true})
-  @Column({type: 'bigint'})
-  vkId: number
+  @Index("mid", {unique: true})
+  @Column({type: 'bigint',})
+  mid: number
 
   // @ManyToOne(() => User, foreman => foreman.subordinates, {eager: true})
   @TreeParent()
@@ -67,7 +69,7 @@ export class User {
   locale: string
 
   @Column({})
-  href: string
+  domain: string
 
   @Column()
   photo: string
@@ -89,17 +91,14 @@ export class User {
   @Column({default: false})
   isWitness: boolean
 
-  @Column({nullable: true,})
-  witnessChatInviteLink: string
+  @Column(type => Chat, )
+  foremanRequestChat: Chat
 
-  @Column({nullable: true,})
-  witnessChatId: number;
+  @Column(type => Chat, )
+  witnessChat: Chat
 
-  @Column({nullable: true,})
-  tenChatInviteLink: string
-
-  @Column({nullable: true,})
-  tenChatId: number
+  @Column(type => Chat, )
+  tenChat: Chat
 
   @CreateDateColumn()
   createdAt: Date
@@ -107,7 +106,15 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date
 
-  constructor(id?: number) {
-    this.id = id
+  get iof() {
+    return `${this.firstName} ${this.patronymic} ${this.lastName}`
+  }
+
+  constructor(init?: number | DeepPartial<User>) {
+    if (typeof init === 'number') {
+      this.id = init
+    } else if (typeof init === 'object') {
+      merge(this, init)
+    }
   }
 }

@@ -10,13 +10,13 @@ import KError from "@/error/KError";
 import {FriendActivityContext} from "vk-io";
 
 /**
- * https://vk.com/dev/friends.areFriends
+ * doc: https://vk.com/dev/friends.areFriends
  */
 export default async function (req: Request, res: Response) {
   const logger = container.createLogger({name: basename(__filename),})
 
   const [areFriend] = await container.vk.api.friends.areFriends({
-    user_ids: [context.user.id],
+    user_ids: [context.user.mid],
     need_sign: 0,
   })
 

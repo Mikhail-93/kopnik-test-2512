@@ -2,17 +2,13 @@ import {Request, Response} from "express";
 
 import container from "@/di/container";
 import {basename} from "path";
-import context from "@/context/context";
-import {getRepository} from "typeorm";
 import {User} from "@entity/user/User.entity";
-import plain from "@entity/user/plain";
 import response from "@api/response";
-import plainForCurrentUser from "@entity/user/plainForCurrentUser";
-import merge from "@entity/user/merge";
 import KError from "@/error/KError";
 import transaction from "@/transaction/transaction";
 import getContext from "@/context/getContext";
 import setUserForeman from "@entity/user/setUserForeman";
+import kickSubordinate from "@/vk/kickSubordinate";
 
 
 /**
@@ -27,13 +23,16 @@ export default async function (req: Request, res: Response) {
     // remove from subordinates
     if (id) {
       if (user.subordinates.find(eachSubordinate => eachSubordinate.id == id)) {
-        const subordinate = await em.findOneOrFail(User, id,)
         logger.info('remove from subordinates')
+        const subordinate = await em.findOneOrFail(User, id,)
+        subordinate.foreman= user //чтобы метод ВК сработал
+        await kickSubordinate(subordinate, user)
         await setUserForeman(subordinate, null )
       } else {
         throw new KError('Invalid Subordinate', 1512)
       }
     } else {
+      await kickSubordinate(user, user)
       logger.info('remove foreman')
       await setUserForeman(user, null)
     }

@@ -15,6 +15,9 @@ import KError from "@/error/KError";
 import transaction from "@/transaction/transaction";
 import getContext from "@/context/getContext";
 import setUserForeman from "@entity/user/setUserForeman";
+import informHalfForemanBad from "@/vk/informHalfForemanBad";
+import meetHalfForeman from "@/vk/meetHalfForeman";
+import kickSubordinate from "@/vk/kickSubordinate";
 
 
 /**
@@ -29,7 +32,13 @@ export default async function (req: Request, res: Response) {
     // reset foreman
     if (user.foreman && id) {
       logger.info('reset foreman before new foreman request')
+      await kickSubordinate(user, user)
       await setUserForeman(user, null)
+    }
+
+    // reset foreman request
+    if (user.foremanRequest){
+      await informHalfForemanBad(user)
     }
 
     if (id) {
@@ -38,6 +47,9 @@ export default async function (req: Request, res: Response) {
         throw new KError('Invalid Foreman: has wrong status or role', 1510)
       }
       user.foremanRequest = foreman
+
+      // свожу в чате полу-младшего и полу-старшего
+      user.foremanRequestChat=  await meetHalfForeman(user)
     } else {
       user.foremanRequest = null
     }

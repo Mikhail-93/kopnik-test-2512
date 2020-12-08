@@ -1,5 +1,4 @@
 import {interfaces} from "inversify";
-import bunyantcp from 'bunyan-logstash-tcp'
 import Logger, {LoggerOptions} from "bunyan";
 import TYPES from "@/di/TYPES";
 import {resolve} from "path";
@@ -8,6 +7,7 @@ import container from "@/di/container";
 import _ from 'lodash'
 import ConsoleStream from "@/di/createLogger/ConsoleStream";
 import ContextStream from "@/di/createLogger/ContextStream";
+
 
 container.bind<interfaces.Factory<Logger>>(TYPES.createLogger).toFactory((context) => {
   return (options = {}) => {

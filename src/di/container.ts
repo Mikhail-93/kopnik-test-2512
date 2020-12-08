@@ -11,7 +11,7 @@ import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnect
 import constants, {IConstants} from "@/di/constants";
 import {SnakeNamingStrategy} from "typeorm-naming-strategies";
 import IDbProvider from "@/di/db/IDbProvider";
-import IVKProvider from "@/di/vk/IVKProvider";
+import IVKProvider from "@/di/vk-io/IVKProvider";
 import {VK} from "vk-io";
 
 
@@ -61,7 +61,7 @@ import './db/dbOptions'
 import './db/db'
 
 // vk
-import "@/di/vk/vk";
-import "@/di/vk/vk-io";
+import "@/di/vk-io/vk";
+import "@/di/vk-io/vk-io";
 
 

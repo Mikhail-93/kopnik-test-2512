@@ -28,8 +28,8 @@ export default function userFactory(prefix: string = new Date().toString(), fiel
     isWitness: false,
     role: RoleEnum.Kopnik,
     rank: 1,
-    vkId: uniq,
-    href: 'https://' + prefix,
+    mid: uniq,
+    domain: 'https://' + prefix,
     ...fields
   })
   return result

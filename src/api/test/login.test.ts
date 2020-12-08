@@ -11,9 +11,9 @@ describe('login', () => {
     await container.provideDatabase()
     user= await createUser('login')
   })
-  it('by user id', async () => {
+  it('success', async () => {
     const res = await request(app)
-      .get('/api/test/login/'+user.id)
+      .get('/api/test/login/'+user.mid)
       .send()
     const res2 = await request(app)
       .get('/api/test/authorize')
