@@ -4,7 +4,7 @@ import {User} from "@entity/user/User.entity"
 import {VK} from "vk-io";
 import meet from "@/vk/meet";
 import {basename} from "path";
-import userFactory from "@entity/user/userFactory";
+import userFactory from "@entity/user/test-utils/testUserFactory";
 import createChat from "@/vk/utils/createChat";
 import getChatInviteLink from "@/vk/utils/getChatInviteLink";
 

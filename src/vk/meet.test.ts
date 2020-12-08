@@ -2,7 +2,7 @@ import container from "@/di/container"
 import {VK} from "vk-io";
 import meet from "@/vk/meet";
 import {basename} from "path";
-import testUser from "@entity/user/testUser";
+import testUser from "@entity/user/test-utils/testUser";
 import createChat from "@/vk/utils/createChat";
 import Chat from "@entity/Chat.entity";
 

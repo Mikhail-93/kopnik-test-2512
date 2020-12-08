@@ -1,7 +1,7 @@
 import container from "@/di/container"
 import {VK} from "vk-io";
 import meetWitness from "@/vk/meetWitness";
-import testUser from "@entity/user/testUser";
+import testUser from "@entity/user/test-utils/testUser";
 import Chat from "@entity/Chat.entity";
 
 describe('meetWitness', () => {

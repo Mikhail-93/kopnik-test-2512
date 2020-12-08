@@ -1,7 +1,7 @@
 import request from "supertest";
 import {Base64} from 'js-base64';
 import app from "@/app";
-import createUser from "@entity/user/createUser";
+import createUser from "@entity/user/test-utils/createTestUser";
 import container from "@/di/container";
 
 

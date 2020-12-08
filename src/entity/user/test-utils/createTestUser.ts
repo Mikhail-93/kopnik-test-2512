@@ -1,8 +1,9 @@
 import merge from "@entity/user/merge";
 import {getManager, getRepository} from "typeorm";
 import {User} from "@entity/user/User.entity";
-import userFactory from "@entity/user/userFactory";
+import userFactory from "@entity/user/test-utils/testUserFactory";
 import context from "@/context/context";
+import Chat from "@entity/Chat.entity";
 
 
 export default async function (prefix?: string, data?: Partial<User> & { [key: string]: any }) {
@@ -10,6 +11,11 @@ export default async function (prefix?: string, data?: Partial<User> & { [key: s
     em = context.em || getManager()
 
   await em.save(user)
+
+  if (user.foreman){
+    user.foreman.tenChat= new Chat(1234, 'https://tenChat')
+    await em.save(user.foreman)
+  }
   // increase ranks for new relations
   if (user.foreman) {
     await em.query(`
@@ -20,5 +26,7 @@ export default async function (prefix?: string, data?: Partial<User> & { [key: s
         AND id <> ${user.id};
   `)
   }
+
+
   return user
 }

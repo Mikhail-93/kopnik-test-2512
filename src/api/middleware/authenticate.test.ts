@@ -6,7 +6,7 @@ import IToken from "@api/middleware/authenticate/IToken";
 import sig from "@api/middleware/authenticate/sig";
 import {EntityManager, getManager,} from "typeorm";
 import {User} from "@entity/user/User.entity";
-import createUser from "@entity/user/createUser";
+import createUser from "@entity/user/test-utils/createTestUser";
 import container from "@/di/container";
 
 

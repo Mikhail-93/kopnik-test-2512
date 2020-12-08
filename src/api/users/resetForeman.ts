@@ -31,9 +31,13 @@ export default async function (req: Request, res: Response) {
       } else {
         throw new KError('Invalid Subordinate', 1512)
       }
-    } else {
+    }
+    else if (!user.foreman){
+      logger.warn('Foreman is null. Reset foreman skipped.')
+    }
+    else {
+      logger.info('reset foreman')
       await kickSubordinate(user, user)
-      logger.info('remove foreman')
       await setUserForeman(user, null)
     }
 

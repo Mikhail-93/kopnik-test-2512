@@ -1,6 +1,6 @@
 import container from "@/di/container"
 import {API, VK} from "vk-io";
-import userFactory from "@entity/user/userFactory";
+import userFactory from "@entity/user/test-utils/testUserFactory";
 import createChat from "@/vk/utils/createChat";
 import Chat from "@entity/Chat.entity";
 import friends from "@/vk/utils/friends";

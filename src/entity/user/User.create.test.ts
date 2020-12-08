@@ -1,7 +1,7 @@
 import container from "@/di/container"
 import {getManager, getRepository} from "typeorm"
 import {User} from "@entity/user/User.entity"
-import userFactory from "@entity/user/userFactory";
+import userFactory from "@entity/user/test-utils/testUserFactory";
 
 describe('User', () => {
   beforeEach(async () => {
