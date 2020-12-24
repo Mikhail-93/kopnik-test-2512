@@ -19,21 +19,31 @@ export default async function (req: Request, res: Response, next: Function) {
   const logger = container.createLogger({name: basename(__filename),})
   const em = context.em || getManager()
 
-  const authentication = req.header('authorization')
-  if (!authentication) {
+  const authorization = req.header('authorization')
+  const tauthorization = req.header('t-authorization')
+  if (!authorization && !tauthorization) {
     next()
     return
   }
 
-  const token = JSON.parse(Base64.decode(req.header('authorization'))) as IToken
-  context.set('token', token)
-  if (token.sig !== sig(token)) {
-    throw new Error('Wrong token signature')
-  }
-  if (token.expire * 1000 < new Date().getTime()) {
-    throw new Error('Token expired')
-  }
+  let token: IToken
 
+  // упрощенный токен для тестов
+  if (process.env.NODE_ENV === 'test' && tauthorization) {
+    token = {
+      mid: JSON.parse(tauthorization),
+    } as IToken
+  } else {
+    token = JSON.parse(Base64.decode(authorization))
+
+    if (token.sig !== sig(token)) {
+      throw new Error('Wrong token signature')
+    }
+    if (token.expire * 1000 < new Date().getTime()) {
+      throw new Error('Token expired')
+    }
+  }
+  context.set('token', token)
   let user = await em.findOne(User, {
     where: {
       mid: token.mid

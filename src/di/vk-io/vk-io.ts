@@ -9,8 +9,11 @@ container.bind<VK>(TYPES.vkIo).toDynamicValue(context => {
   // https://negezor.github.io/vk-io/ru/guide/api.html
   const vk = new constructor({
     token: process.env.VK_SVETOSLAV_TOKEN,
-    apiMode: "sequential",
+    apiMode: "parallel_selected", // не работает
     apiRequestMode: 'sequential',
+    apiLimit: 1,
+    apiExecuteCount: 25,
+    apiExecuteMethods: ['messages.send'],
   })
   return vk as VK
 }).inSingletonScope()

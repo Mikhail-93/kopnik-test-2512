@@ -22,7 +22,7 @@ export default async function (req: Request, res: Response) {
       latitude: Between(y1, y2),
       longitude: Between(x1, x2),
     },
-    relations: []
+    relations: ['foreman', 'foremanRequest'] // foremanRequest добавляем для себя любимого, а то перетрется пустым значением
   })
 
   res.json(response(users.map(eachUser => plainForCurrentUser(eachUser,))))

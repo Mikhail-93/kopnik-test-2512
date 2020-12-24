@@ -8,22 +8,28 @@ export default class {
   constructor(options) {
     this.api = {
       messages: {},
-      friends: {}
+      friends: {},
+      execute: null,
+      users: {},
     } as API
 
+    this.api.execute = async (code) => {
+      return {response: 1, errors: []} as any
+    }
     this.api.messages.send = async (params) => {
+      assert.notEqual(params.peer_id, 2000000000, 'chat_id can\' be 2000000000')
       return 1
     }
 
     this.api.messages.createChat = async (params) => {
       return new Date().getTime()
     }
-    this.api.messages.addChatUser= async (params) => {
+    this.api.messages.addChatUser = async (params) => {
       assert.ok(params.user_id)
       assert.ok(params.chat_id)
       return 1
     }
-    this.api.messages.removeChatUser= async (params) => {
+    this.api.messages.removeChatUser = async (params) => {
       assert.ok(params.user_id)
       assert.ok(params.chat_id)
       return 1
@@ -41,6 +47,16 @@ export default class {
           friend_status: FriendStatusEnum.Friend
         }
       })
+    }
+    this.api.users.get = async (params) => {
+      return [{
+        first_name: 'test',
+        last_name: 'test',
+        nickname: 'test',
+        photo_200: 'http://photo_200',
+        domain: "test2test",
+        id: new Date().getTime(),
+      }]
     }
 
   }

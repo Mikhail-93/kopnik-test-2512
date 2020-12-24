@@ -19,7 +19,7 @@ export default async function (subordinate: User): Promise<void> {
     await addChatUser(foreman.tenChat, subordinate)
 
     // объясняю что к чему
-    await sendToGroupChat(foreman.tenChat, {message: `$t Поприветствуем нашего нового друга! Его зовут ${subordinate.firstName}`})
-    await sendToGroupChat(foreman.tenChat, {message: `$t ${subordinate.firstName}, добро пожаловать! Это чат десятки. Старшина десятки ${subordinate.foreman.firstName}`})
+    await sendToGroupChat(foreman.tenChat, {message: `$t Поприветствуйте нового друга! Его зовут ${subordinate.firstName}`})
+    await sendToGroupChat(foreman.tenChat, {message: `$t ${subordinate.firstName}, это чат твоей новой десятки. Старшина десятки ${subordinate.foreman.firstName}`})
   })
 }

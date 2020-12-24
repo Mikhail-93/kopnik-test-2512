@@ -2,13 +2,8 @@ import {Request, Response} from "express";
 
 import container from "@/di/container";
 import {basename} from "path";
-import context from "@/context/context";
-import {getRepository} from "typeorm";
 import {User} from "@entity/user/User.entity";
-import plain from "@entity/user/plain";
 import response from "@api/response";
-import plainForCurrentUser from "@entity/user/plainForCurrentUser";
-import merge from "@entity/user/merge";
 import StatusEnum from "@entity/user/StatusEnum";
 import RoleEnum from "@entity/user/RoleEnum";
 import KError from "@/error/KError";
@@ -16,7 +11,7 @@ import transaction from "@/transaction/transaction";
 import getContext from "@/context/getContext";
 import setUserForeman from "@entity/user/setUserForeman";
 import informHalfForemanBad from "@/vk/informHalfForemanBad";
-import meetHalfForeman from "@/vk/meetHalfForeman";
+import meetHalfForeman from "@/vk/meetHalfSubordinateHalfForeman";
 import kickSubordinate from "@/vk/kickSubordinate";
 
 
@@ -29,6 +24,16 @@ export default async function (req: Request, res: Response) {
     const {user, em} = getContext()
     const {id} = req.body
 
+    const halfForeman = id ? await em.findOneOrFail(User, id) : null
+
+    // tree-cycle
+    if (halfForeman) {
+      const halfForemanForemans= await em.getTreeRepository(User).findAncestors(halfForeman)
+      if (halfForemanForemans.find(f=>f.id==user.id)){
+        throw new KError('Foreman cycle', 1)
+      }
+    }
+
     // reset foreman
     if (user.foreman && id) {
       logger.info('reset foreman before new foreman request')
@@ -37,19 +42,18 @@ export default async function (req: Request, res: Response) {
     }
 
     // reset foreman request
-    if (user.foremanRequest){
+    if (user.foremanRequest) {
       await informHalfForemanBad(user)
     }
 
     if (id) {
-      const foreman = await em.findOneOrFail(User, id)
-      if (foreman.status != StatusEnum.Confirmed || ![RoleEnum.Kopnik, RoleEnum.DanilovKopnik].includes(foreman.role)) {
+      if (halfForeman.status != StatusEnum.Confirmed || ![RoleEnum.Kopnik, RoleEnum.DanilovKopnik].includes(halfForeman.role)) {
         throw new KError('Invalid Foreman: has wrong status or role', 1510)
       }
-      user.foremanRequest = foreman
+      user.foremanRequest = halfForeman
 
       // свожу в чате полу-младшего и полу-старшего
-      user.foremanRequestChat=  await meetHalfForeman(user)
+      user.foremanRequestChat = await meetHalfForeman(user)
     } else {
       user.foremanRequest = null
     }

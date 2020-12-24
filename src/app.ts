@@ -32,10 +32,11 @@ import getForeman from "@api/users/getForeman";
 import StatusEnum from "@entity/user/StatusEnum";
 import RoleEnum from "@entity/user/RoleEnum";
 import {Transaction} from "typeorm";
+import inviteKopa from "@api/users/inviteKopa";
 
 const app = express()
 app.use(cors({
-  origin:  ['http://localhost:8080', 'https://localhost:8080','https://staging.kopnik.org', 'https://kopnik.org',],
+  origin: ['http://localhost:8080', 'https://localhost:8080', 'https://staging.kopnik.org', 'https://kopnik.org',],
   credentials: true,
 }))
 app.use(bodyParser.json())
@@ -54,11 +55,18 @@ app.post('/api/users/updateProfile', authorize(), update)
 app.post('/api/users/updateLocale', authorize(), updateLocale)
 app.post('/api/users/updateWitnessRequest', authorize(), updateWitnessRequest)
 app.get('/api/users/isMessagesFromGroupAllowed', authorize(), isMessagesFromGroupAllowed)
+app.post('/api/users/inviteKopa', authorize({
+  statuses: [StatusEnum.Confirmed],
+  roles: [RoleEnum.Kopnik, RoleEnum.DanilovKopnik,]
+}), inviteKopa)
 
 // tree
-app.post('/api/users/putForemanRequest', authorize({statuses:[StatusEnum.Confirmed], roles:[RoleEnum.Kopnik, RoleEnum.DanilovKopnik, RoleEnum.FutureKopnik]}), putForemanRequest)
+app.post('/api/users/putForemanRequest', authorize({
+  statuses: [StatusEnum.Confirmed],
+  roles: [RoleEnum.Kopnik, RoleEnum.DanilovKopnik, RoleEnum.FutureKopnik]
+}), putForemanRequest)
 app.get('/api/users/getForemanRequests', authorize(), getForemanRequests)
-app.post('/api/users/updateForemanRequest', authorize(), resolveForemanRequest)
+app.post('/api/users/resolveForemanRequest', authorize(), resolveForemanRequest)
 app.post('/api/users/resetForeman', authorize(), resetForeman)
 app.get('/api/users/getSubordinates', authorize(), getSubordinates)
 // app.get('/api/users/getForeman', authorize(), getForeman)

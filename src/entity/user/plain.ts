@@ -55,7 +55,7 @@ export default function (user: User, options: { isCurrentUser?: boolean, isForem
   }
 
   //   tenChatId, tenChatInviteLink
-  if (!options.isCurrentUser && !options.isSubordinate) {
+  if (!options.isCurrentUser && !options.isForeman) {
     delete result.tenChatInviteLink
   }
 

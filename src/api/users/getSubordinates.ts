@@ -15,7 +15,7 @@ import StatusEnum from "@entity/user/StatusEnum";
  */
 export default async function (req: Request, res: Response) {
   const logger = container.createLogger({name: basename(__filename),}),
-    {id} = req.body
+    id = req.query.id ? parseInt(req.query.id as string) : undefined
 
   const result = await getRepository(User).find({
     where: {

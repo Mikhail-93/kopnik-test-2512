@@ -16,12 +16,15 @@ export default async function (subordinate: User, kicker: User): Promise<void> {
 
   if (kicker===subordinate) {
     await sendToGroupChat(subordinate.foreman.tenChat, {
-      message: `Здравия всей доброй десятке! Для справки сообщаю, что ${subordinate.firstName} выходит из вашей десятки.`
+      message: `Здравия всей доброй десятке! ${subordinate.firstName} принял решение выйти из десятки. Исключаю его из вашего чата.`
     })
   }
   else{
+    await sendToGroupChat(subordinate.foreman.tenChat, {
+      message: `Здравия всей доброй десятке! ${subordinate.foreman.firstName} исключил ${subordinate.firstName} из десятки. Исключаю его из вашего чата.`
+    })
     await sendToDirect(subordinate, {
-      message:   `Приветствую ${subordinate.firstName}! Сообщаю тебе, что старшина исключил тебя из десятки. Это не всегда плохо. Если так случилось, значит найди другую общину, с которой тебе будет по пути.`
+      message:   `Приветствую ${subordinate.firstName}! Сообщаю тебе, что старшина исключил тебя из десятки. Я исключаю тебя из её чата. Не отчаивайся, это не всегда плохо. Если тебя исключили из десятки, найди другую, с которой тебе будет по пути.`
     })
   }
 

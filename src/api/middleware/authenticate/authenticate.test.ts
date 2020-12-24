@@ -50,7 +50,7 @@ describe('authenticate', () => {
     expect(res.status).toEqual(200)
   })
 
-  it.only('existed user', async () => {
+  it('existed user', async () => {
     // удаляем на всякий случай пользователя
     await getManager().query(`truncate users_closure`)
     await getManager().delete(User, {
