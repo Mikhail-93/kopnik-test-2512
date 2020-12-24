@@ -1,21 +1,28 @@
 version: '3.7'
 services:
   app:
+    # container_name: kopnik-node_app_${NODE_ENV}
     build:
       context: .
       dockerfile: ./.docker/app/Dockerfile
-    container_name: app
-    restart: always
-#    volumes:
-#      - .:/app
+    # container_name: ${NODE_ENV}app
+    environment:
+      # переопределяем параметры подключения для работы сервера в контейнере
+      DB_HOST: db
+      DB_PORT: 5432
+    env_file:
+      - .env
+    # restart: always
+    volumes:
+      - .:/app
     ports:
       - ${APP_PORT}:3000
-    environment:
-      - DB_SID=ORCLCDB.localdomain
 
     command: [ "npm", "start" ]
+  # command: [ "ping", "db" ]
 
   db:
+    # container_name: kopnik-node_db_${NODE_ENV}
     image: postgres
     restart: always
     environment:
@@ -27,7 +34,7 @@ services:
       - ../kopnik-db/dumps-${NODE_ENV}:/var/lib/postgresql/dumps
     ports:
       - ${DB_PORT}:5432
-#        networks:
-#            - backend
+#   networks:
+#    - backend
 
 
