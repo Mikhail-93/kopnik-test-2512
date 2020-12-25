@@ -29,7 +29,6 @@ jobs:
               - run: npm install @types/js-base64 --save-dev
               - run: docker-compose up -d db
               - run: docker-compose build --no-cache
+              - run: docker-compose run app npm run test
               - run: docker-compose up -d app
-              - run: docker exec kopnik-test-2512_db_1 psql -U db_user -c "GRANT USAGE ON SCHEMA public TO <non-admin-user>;"
-              - run: docker exec kopnik-test-2512_db_1 psql -U db_user -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO <non-admin-user>;"
               - run: npm test
