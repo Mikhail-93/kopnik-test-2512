@@ -19,8 +19,7 @@ jobs:
                   registry-url: https://registry.npmjs.org
               - run: cp default.env .env
               - run: npm i
-              - run: docker-compose up -d
-              - run: docker-compose up db
+              - run: docker-compose up db -d
               - run: docker-compose build --no-cache
-              - run: docker-compose run app 
+              - run: docker-compose up app -d
               - run: npm test
