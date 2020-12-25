@@ -5,6 +5,7 @@ env:
     DB_DB: db_name
     DB_PORT: 5432
     DB_HOST: localhost
+    NODE_ENV: test
 on:
     push:
         branches:
