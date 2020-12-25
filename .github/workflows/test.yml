@@ -33,6 +33,7 @@ jobs:
               - run: npm install -g npm@7.3.0
               - run: npm install @types/js-base64 --save-dev
               - run: docker-compose up -d db
+              - run: docker cp .env kopnik-test-2512_db_1:/
               - run: docker-compose build --no-cache
               - run: docker-compose up -d app
               - run: npm test
