@@ -2,7 +2,7 @@ name: "test"
 env:
     DB_USER: db_user
     DB_PASSWORD: db_password
-    DB_DB: db_name
+    DB_DB: db_db
     DB_PORT: 5432
     DB_HOST: localhost
 on:
