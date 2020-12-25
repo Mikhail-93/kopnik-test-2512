@@ -26,9 +26,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: db_user
-      POSTGRES_PASSWORD: db_password
-      POSTGRES_DB: db_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DB}
     volumes:
       - ../kopnik-db/db-${NODE_ENV}:/var/lib/postgresql/data
       - ../kopnik-db/dumps-${NODE_ENV}:/var/lib/postgresql/dumps
