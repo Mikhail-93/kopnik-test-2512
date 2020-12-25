@@ -16,7 +16,6 @@ jobs:
                 with:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
-              - run: cat test.env
               - run: npm install -g typescript
               - run: npm i -D ts-jest
               - run: npm install typescript --save
