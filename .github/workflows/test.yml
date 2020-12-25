@@ -17,8 +17,8 @@ jobs:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
               - run: mv default.env .env
-              - run: echo "VK_CLIENT_SECRET=${{ secrets.VK_CLIENT_SECRET }}" > .env
-              - run: echo "VK_SVETOSLAV_TOKEN=${{ secrets.VK_SVETOSLAV_TOKEN }}" > .env 
+              - run: echo "VK_CLIENT_SECRET=${{ secrets.VK_CLIENT_SECRET }}" >> .env
+              - run: echo "VK_SVETOSLAV_TOKEN=${{ secrets.VK_SVETOSLAV_TOKEN }}" >> .env 
               - run: npm install -g typescript
               - run: npm i -D ts-jest
               - run: npm install typescript --save
