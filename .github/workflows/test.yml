@@ -1,7 +1,4 @@
 name: "test"
-env:
-    VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}
-    VK_SVETOSLAV_TOKEN: ${{ secrets.VK_SVETOSLAV_TOKEN }}
 on:
     push:
         branches:
@@ -20,7 +17,6 @@ jobs:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
               - run: cat test.env
-              - run: mv default.env .env
               - run: npm install -g typescript
               - run: npm i -D ts-jest
               - run: npm install typescript --save
