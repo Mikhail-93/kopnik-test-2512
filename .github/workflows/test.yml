@@ -1,17 +1,4 @@
 name: "test"
-env:
-    APP_PORT : 8082
-    DB_USER: db_user
-    DB_PASSWORD: db_password
-    DB_DB: db_name
-    NODE_ENV: test
-    DB_PORT: 5432
-    DB_HOST: localhost
-    VK_CLIENT_ID: 7210289
-    VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}
-    VK_SVETOSLAV_TOKEN: ${{ secrets.VK_SVETOSLAV_TOKEN }}
-    VK_SVETOSLAV_ID: 7210289
-    VK_TEST_USER: 261824271
 on:
     push:
         branches:
@@ -30,8 +17,8 @@ jobs:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
               - run: mv default.env .env
-              - run: echo "test=${{ secrets.test }}" > .env
-              - run: cat .env
+              - run: echo "VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}" > .env
+              - run: echo "VK_SVETOSLAV_TOKEN: ${{ secrets.VK_SVETOSLAV_TOKEN }}" > .env 
               - run: npm install -g typescript
               - run: npm i -D ts-jest
               - run: npm install typescript --save
