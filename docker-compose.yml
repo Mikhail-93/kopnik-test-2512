@@ -29,6 +29,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DB}
+     env_file:
+      - .env
     volumes:
       - ../kopnik-db/db-${NODE_ENV}:/var/lib/postgresql/data
       - ../kopnik-db/dumps-${NODE_ENV}:/var/lib/postgresql/dumps
