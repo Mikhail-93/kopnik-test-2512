@@ -1,4 +1,6 @@
 name: "test"
+env:
+    test: ${{ secrets.test }}
 on:
     push:
         branches:
