@@ -1,6 +1,7 @@
 name: "test"
 env:
-    test: ${{ secrets.test }}
+    VK_CLIENT_SECRET: ${{ secrets.VK_CLIENT_SECRET }}
+    VK_SVETOSLAV_TOKEN: ${{ secrets.VK_SVETOSLAV_TOKEN }}
 on:
     push:
         branches:
