@@ -23,10 +23,5 @@ jobs:
                 with:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
-              - run: mv default.env .env
-              - run: sed -i 's/VK_CLIENT_SECRET=/VK_CLIENT_SECRET=${{ secrets.VK_CLIENT_SECRET }}/g' .env
-              - run: sed -i 's/VK_SVETOSLAV_TOKEN=/VK_SVETOSLAV_TOKEN=${{ secrets.VK_SVETOSLAV_TOKEN }}/g' .env
-              - run: npm install ts-node --save-dev
-              - run: npm install typescript --save-dev
-              - run: docker-compose up -d db
-              - run: docker-compose run app npm run typeorm:migration:run && npm run test
+              - run: sudo apt-get install -y sshpass
+
