@@ -12,4 +12,4 @@ jobs:
         runs-on: ubuntu-latest
         steps:
               - run: sudo apt-get update && sudo apt-get install -y sshpass
-              - run: sshpass -p ${{ secrets.ssh_password }} ssh -o StrictHostKeyChecking=no ${{ secrets.ssh_user }}@{{ secrets.ssh_hostname }} "echo pwd"
+              - run: sshpass -p ${{ secrets.ssh_password }} ssh -o StrictHostKeyChecking=no ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }} "echo pwd"
