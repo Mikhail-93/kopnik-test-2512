@@ -23,5 +23,6 @@ jobs:
                 with:
                   node-version: 14.6.0
                   registry-url: https://registry.npmjs.org
-              - run: sshpass -p ${{ secrets.ssh_password }} ssh ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }}
+              - run: apt-get update && apt-get install -y sshpass
+              - run: sshpass -p ${{ secrets.ssh_password }} ssh ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }} && pwd
 
