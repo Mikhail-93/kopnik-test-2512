@@ -12,5 +12,5 @@ jobs:
         runs-on: ubuntu-latest
         steps:
               - run: sudo apt-get update && sudo apt-get install -y sshpass
-              - run: sshpass -p ${{ secrets.ssh_password }} ssh ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }} && pwd
+              - run: sshpass -p ${{ secrets.ssh_password }} ssh -T ${{ secrets.ssh_user }}@${{ secrets.ssh_hostname }} && pwd
 
